@@ -40,10 +40,12 @@ import de.mogwai.common.i18n.ResourceHelper;
 import de.mogwai.common.i18n.ResourceHelperProvider;
 
 import javax.swing.*;
+import javax.swing.plaf.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+// import java.awt.event.ActionEvent;
+// import java.awt.event.KeyEvent;
+// import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,7 +63,7 @@ import java.util.Map;
  * @author $Author: mirkosertic $
  * @version $Date: 2009-03-13 15:40:33 $
  */
-public final class ERDesignerComponent implements ResourceHelperProvider {
+public final class ERDesignerComponent extends JFrame implements ResourceHelperProvider {
 
     protected File currentEditingFile;
 
@@ -360,10 +362,11 @@ public final class ERDesignerComponent implements ResourceHelperProvider {
         DefaultAction theSaveToRepository = new DefaultAction(
                 new SaveToRepositoryCommand(), this,
                 ERDesignerBundle.SAVEMODELTODB);
-
+        
         relationAction = new DefaultAction(
                 e -> {
                     commandSetTool(ToolEnum.RELATION);
+
                     if (!relationButton.isSelected()) {
                         relationButton.setSelected(true);
                     }
@@ -410,7 +413,7 @@ public final class ERDesignerComponent implements ResourceHelperProvider {
                         viewButton.setSelected(true);
                     }
                 }, this, ERDesignerBundle.VIEWTOOL);
-
+                
         DefaultAction theExportAction = new DefaultAction(this,
                 ERDesignerBundle.EXPORT);
 
@@ -758,6 +761,18 @@ public final class ERDesignerComponent implements ResourceHelperProvider {
         commentButton = new DefaultToggleButton(commentAction);
         viewButton = new DefaultToggleButton(viewAction);
 
+        handButton.setMnemonic('H');
+        relationButton.setMnemonic('R');
+        entityButton.setMnemonic('E');
+        commentButton.setMnemonic('C');
+        viewButton.setMnemonic('V');
+
+        handButton.setToolTipText("Select/Hand (Alt-H)");
+        relationButton.setToolTipText("Relation (Alt-R)");
+        entityButton.setToolTipText("Tables or Entity (Alt-E)");
+        commentButton.setToolTipText("Comment (Alt-C)");
+        viewButton.setToolTipText("Views (Alt-V)");
+
         ButtonGroup theGroup = new ButtonGroup();
         theGroup.add(handButton);
         theGroup.add(relationButton);
@@ -786,6 +801,20 @@ public final class ERDesignerComponent implements ResourceHelperProvider {
 
         setupViewForNothing();
     }
+
+    private void uiToolTip() {
+        UIManager.put("ToolTip.font",
+            new FontUIResource("Verdana", Font.BOLD, 10));
+         
+        UIManager.put("ToolTip.background",
+            new ColorUIResource(Color.WHITE));
+                
+        UIManager.put("ToolTip.foreground",
+            new ColorUIResource(Color.BLACK));
+         
+        UIManager.put("ToolTip.border",
+            BorderFactory.createLineBorder(new Color(246, 222, 124)));
+        }        
 
     private void zoomOut() {
         int theIndex = zoomBox.getSelectedIndex();
